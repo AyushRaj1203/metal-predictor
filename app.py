@@ -5,6 +5,7 @@ from CBFV import composition
 from sklearn.preprocessing import StandardScaler, normalize
 import os
 
+
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Load the model and scaler from the pickle file
