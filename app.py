@@ -1,11 +1,8 @@
 from flask import Flask, render_template, request, jsonify
-import json
 import pickle
 import pandas as pd
 from CBFV import composition
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import normalize
-import re
+from sklearn.preprocessing import StandardScaler, normalize
 import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -18,18 +15,18 @@ model_loaded = loaded_model_info["model"]
 scaler_loaded = loaded_model_info["scaler"]
 
 # Function to predict metal or non-metal
-def predict_metal(formula, model, scaler):
-    input = pd.DataFrame({'formula': [formula], 'target': [0]})
+def predict_metal(formula):
+    input_data = pd.DataFrame({'formula': [formula], 'target': [0]})
     try:
-        features, _, _, _ = composition.generate_features(input, elem_prop='magpie', drop_duplicates=False, extend_features=True, sum_feat=True)
+        features, _, _, _ = composition.generate_features(input_data, elem_prop='magpie', drop_duplicates=False, extend_features=True, sum_feat=True)
     except ValueError as e:
         if 'not in list' in str(e):
             return None, "Enter a valid Formula!!"
         else:
             raise e
-    features_scaled = scaler.transform(features)
+    features_scaled = scaler_loaded.transform(features)
     features_normalized = normalize(features_scaled)
-    prediction = model.predict(features_normalized)
+    prediction = model_loaded.predict(features_normalized)
     prediction_label = 'Metal' if prediction[0] == 1 else 'Non-Metal'
     return prediction_label, None
 
@@ -40,7 +37,7 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     formula = request.form['formula']
-    prediction, error = predict_metal(formula, model_loaded, scaler_loaded)
+    prediction, error = predict_metal(formula)
     return jsonify({'prediction': prediction, 'error': error})
 
 if __name__ == '__main__':
