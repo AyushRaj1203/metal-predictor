@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Metal Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+</head>
+<body>
+    <div class="container">
+        <div class="content" id="content">
+            <h1>METAL PREDICTOR</h1>
+            <div class="separator"></div>
+            <form id="predict-form">
+                <label for="formula">Enter Chemical Formula</label>
+                <input type="text" id="formula" name="formula" required autofocus>
+                <button type="submit" class="predict-button">Predict</button>
+            </form>
+            <div id="result"></div>
+            <button id="predict-another" style="display: none;">Predict Another Formula</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#predict-form').on('submit', function(event) {
+                event.preventDefault();
+                var formula = $('#formula').val();
+                console.log('Formula:', formula); // Add this line for debugging
+                $.ajax({
+                    url: '/predict',
+                    method: 'POST',
+                    data: { formula: formula },
+                    success: function(response) {
+                        if (response.error) {
+                            $('#result').html('<h2 style="color: red;">' + response.error + '</h2>');
+                        } else {
+                            $('#result').html('<h2 style="color: #333;">Prediction: ' + response.prediction + '</h2>');
+                            $('#predict-another').show();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#result').html('<h2 style="color: red;">Error: ' + error + '</h2>');
+                    }
+                });
+            });
+
+            $('#predict-another').on('click', function() {
+                $('#formula').val('');
+                $('#result').empty();
+                $('#predict-another').hide();
+                $('#content').addClass('turn-page'); // Add the turn-page class
+                setTimeout(function() {
+                    $('#content').removeClass('turn-page'); // Remove the turn-page class after the animation
+                }, 1000); // Duration of the animation
+            });
+        });
+    </script>
+</body>
+</html>
