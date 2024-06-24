@@ -11,9 +11,13 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 # Load the model and scaler from the pickle file
 with open('model.pkl', 'rb') as file:
     loaded_model_info = pickle.load(file)
+    
+#load the model
 
 model_loaded = loaded_model_info["model"]
 scaler_loaded = loaded_model_info["scaler"]
+
+#scaler
 
 # Function to predict metal or non-metal
 def predict_metal(formula):
