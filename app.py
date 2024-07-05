@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import pickle
 import pandas as pd
 from CBFV import composition
-from sklearn.preprocessing import StandardScaler, normalize
+from sklearn.preprocessing import normalize
 import os
 
 
