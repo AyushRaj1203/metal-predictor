@@ -1,20 +1,21 @@
 from flask import Flask, render_template, request, jsonify
 import pickle
+import joblib
 import pandas as pd
 from CBFV import composition
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import StandardScaler, normalize
 import os
 
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Load the model and scaler from the pickle file
-with open('model.pkl', 'rb') as file:
-    loaded_model_info = pickle.load(file)
-    
-#Load the model
-model_loaded = loaded_model_info["model"]
-scaler_loaded = loaded_model_info["scaler"]
+# Path to the model file
+MODEL_PATH = 'model.pkl'
+ 
+# Load the model and scaler
+model_loaded = joblib.load(MODEL_PATH)
+model = model_loaded['model']
+scaler = model_loaded['scaler']
 
 
 # Function to predict metal or non-metal
@@ -27,9 +28,9 @@ def predict_metal(formula):
             return None, "Enter a valid Formula!!"
         else:
             raise e
-    features_scaled = scaler_loaded.transform(features)
+    features_scaled = scaler.transform(features)
     features_normalized = normalize(features_scaled)
-    prediction = model_loaded.predict(features_normalized)
+    prediction = model.predict(features_normalized)
     prediction_label = 'Metal' if prediction[0] == 1 else 'Non-Metal'
     return prediction_label, None
 
