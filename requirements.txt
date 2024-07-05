@@ -1,4 +1,4 @@
-Flask==2.2.3
-pandas==1.5.3
 CBFV
+pandas
+Flask
 scikit-learn==1.5.0

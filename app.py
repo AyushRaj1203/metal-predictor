@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-import pickle
 import joblib
 import pandas as pd
 from CBFV import composition
