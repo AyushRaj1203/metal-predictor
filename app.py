@@ -12,7 +12,7 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 # Path to the model file
 MODEL_PATH = 'model.pkl'
  
-# Load the model and scaler
+# Load the model
 model_loaded = joblib.load(MODEL_PATH)
 model = model_loaded['model']
 scaler = model_loaded['scaler']
